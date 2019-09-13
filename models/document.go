@@ -1,4 +1,4 @@
-package main
+package models
 
 // Header ...
 type Header struct {

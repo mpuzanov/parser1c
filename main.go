@@ -13,6 +13,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/mpuzanov/parser1c/models"
 	"golang.org/x/text/encoding/charmap"
 )
 
@@ -42,8 +43,8 @@ func main() {
 
 }
 
-func importData(data string) (doc Document1C, err error) {
-	doc = Document1C{}
+func importData(data string) (doc models.Document1C, err error) {
+	doc = models.Document1C{}
 	lines := strings.SplitN(data, "\n", 2)
 	if strings.TrimSpace(lines[0]) != "1CClientBankExchange" {
 		log.Fatal("File not 1CClientBankExchange")
@@ -58,32 +59,3 @@ func importData(data string) (doc Document1C, err error) {
 	fmt.Println(data)
 	return doc, nil
 }
-
-// func importFile(inFile io.Reader) (err error) {
-// 	reader := bufio.NewReader(inFile)
-// 	eof := false
-// 	for !eof {
-// 		var line string
-// 		line, err = reader.ReadString('\n')
-// 		if err == io.EOF {
-// 			err = nil  // в действительности признак io.EOF не является ошибкой
-// 			eof = true // это вызовет прекращение цикла в следующей итерации
-// 		} else if err != nil {
-// 			return err // в случае настоящей ошибки выйти немедленно
-// 		}
-// 		fmt.Println(line)
-// 	}
-// 	return nil
-// }
-
-// func importFile2(inFile io.Reader) (err error) {
-
-// 	dec := charmap.Windows1251.NewDecoder().Reader(inFile)
-
-// scanner := bufio.NewScanner(readerDecoder)
-// for scanner.Scan() {
-// 	fmt.Println(scanner.Text())
-// }
-
-// 	return nil
-// }
