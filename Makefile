@@ -1,9 +1,12 @@
-.PHONY: build
+
+sourse=./cmd/parser1c
+
+.PHONY: build test run
 build:
-	go build -v .
+	go build -v ${sourse}
 
 test:
-	go test
+	go test -v
 
 run:
-	go build -o parser1c.exe && ./parser1c.exe -format xlsx ./files/kl_to.txt
+	go run ${sourse} -format xlsx ./files/kl_to.txt

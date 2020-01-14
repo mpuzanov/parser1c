@@ -69,7 +69,7 @@ func (doc *File1C) ToJSON(toFileName string) error {
 }
 
 // ToExcel ...
-func (doc *File1C) ToExcel(fileName string) {
+func (doc *File1C) ToExcel(fileName string) error {
 	var file *xlsx.File
 	var sheet *xlsx.Sheet
 	var row *xlsx.Row
@@ -80,7 +80,7 @@ func (doc *File1C) ToExcel(fileName string) {
 
 	sheet, err = file.AddSheet("Sheet1")
 	if err != nil {
-		fmt.Printf(err.Error())
+		return err
 	}
 
 	//Зададим наименование колонок
@@ -100,6 +100,7 @@ func (doc *File1C) ToExcel(fileName string) {
 
 	err = file.Save(fileName)
 	if err != nil {
-		fmt.Printf(err.Error())
+		return err
 	}
+	return nil
 }

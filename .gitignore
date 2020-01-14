@@ -5,6 +5,8 @@
 *.so
 *.dylib
 *.log
+*.tmp
+go.sum
 
 # Test binary, build with `go test -c`
 *.test
@@ -14,3 +16,4 @@
 
 /.vscode
 /files
+/parser1c
