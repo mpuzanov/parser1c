@@ -1,4 +1,4 @@
-module github.com/mpuzanov/parser1c
+module parser1c
 
 go 1.13
 

@@ -1,0 +1,7 @@
+linters-settings:
+    goimports:
+        local-prefixes: parser1c/
+linters:
+    enable:      
+      - govet
+      - golint

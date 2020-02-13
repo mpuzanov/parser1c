@@ -2,25 +2,24 @@ package parser1c
 
 import (
 	"fmt"
-	"log"
 	"regexp"
-	"strings"
 
-	"github.com/mpuzanov/parser1c/internal/app/models"
+	"parser1c/internal/models"
+	"strings"
 )
 
 var pattern string
 
-//ImportData ...
+//ImportData Преобразуем текст файла с реестром в нашу структуру документа
 func ImportData(data string) (doc *models.File1C, err error) {
 
 	doc = models.NewFile1C()
 
 	lines := strings.SplitN(data, "\n", 2)
 	if strings.TrimSpace(lines[0]) != "1CClientBankExchange" {
-		log.Fatal("File not 1CClientBankExchange")
+		return nil, fmt.Errorf("File not 1CClientBankExchange")
 	}
-	//fmt.Println(data)
+	//log.Println(data)
 
 	for _, val := range models.HeaderFile {
 		doc.Header[val] = getValueName(val, data)
@@ -35,36 +34,20 @@ func ImportData(data string) (doc *models.File1C, err error) {
 	return doc, nil
 }
 
+//getStringDoc выделяем документы оплат в файле
 func getStringDoc(data string) []string {
-
 	var res []string
-
 	pattern = `(СекцияДокумент=)(.+\s+)+?(КонецДокумента)`
-
 	re := regexp.MustCompile(pattern)
-	//fmt.Printf("Pattern: %v\n", re.String())
-	//fmt.Println(re.MatchString(data))
-
 	submatchall := re.FindAllString(data, -1)
-	for _, element := range submatchall {
-		res = append(res, element)
-	}
+	res = append(res, submatchall...)
 	return res
 }
 
+//getValueName получаем значения заданных полей
 func getValueName(name, data string) string {
 	var res string
 	pattern := fmt.Sprintf(`%s=(.+)`, name)
-	re := regexp.MustCompile(pattern)
-	match := re.FindStringSubmatch(data)
-	if match != nil {
-		res = strings.TrimSpace(match[1])
-	}
-	return res
-}
-
-func getValue(pattern, data string) string {
-	var res string
 	re := regexp.MustCompile(pattern)
 	match := re.FindStringSubmatch(data)
 	if match != nil {

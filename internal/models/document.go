@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"unicode/utf8"
 
 	"github.com/tealeg/xlsx"
 )
 
-// File1C ...
+// File1C файл выгрузки платежей из 1С
 type File1C struct {
 	Header map[string]string
 	Docs   []map[string]string
@@ -18,17 +19,20 @@ type File1C struct {
 func NewFile1C() *File1C {
 	d := &File1C{}
 	d.Header = make(map[string]string)
-	d.Docs = make([]map[string]string, 0, 0)
+	d.Docs = make([]map[string]string, 0)
 	return d
 }
 
-//HeaderFile ...
+//HeaderFile параметры файла
 var HeaderFile = []string{"ВерсияФормата", "Кодировка", "ДатаСоздания"}
 
-//HeaderDoc ...
+//HeaderDoc список полей в секции документа
 var HeaderDoc = []string{"Номер", "Дата", "Сумма", "ПлательщикСчет", "ПлательщикИНН", "Плательщик", "ПолучательСчет", "ПолучательИНН", "Получатель", "НазначениеПлатежа"}
 
-//ToCsv ...
+//withHeader ширина колонок
+var withHeader = make(map[string]int)
+
+//ToCsv Сохранение в csv-формат
 func (doc *File1C) ToCsv(toFileName string) error {
 	s := ""
 	for index := 0; index < len(HeaderDoc); index++ {
@@ -83,19 +87,44 @@ func (doc *File1C) ToExcel(fileName string) error {
 		return err
 	}
 
+	headerFont := xlsx.NewFont(12, "Calibri")
+	headerFont.Bold = true
+	headerFont.Underline = false
+	headerStyle := xlsx.NewStyle()
+	headerStyle.Font = *headerFont
+
+	dataFont := xlsx.NewFont(11, "Calibri")
+	dataStyle := xlsx.NewStyle()
+	dataStyle.Font = *dataFont //*xlsx.DefaultFont()
+
 	//Зададим наименование колонок
 	row = sheet.AddRow()
 	for index := 0; index < len(HeaderDoc); index++ {
 		cell = row.AddCell()
 		cell.Value = HeaderDoc[index]
+		cell.SetStyle(headerStyle)
+		withHeader[HeaderDoc[index]] = utf8.RuneCountInString(HeaderDoc[index])
 	}
+	//fmt.Println(withHeader)
 	//данные
 	for index := 0; index < len(doc.Docs); index++ {
 		row = sheet.AddRow()
 		for j := 0; j < len(HeaderDoc); j++ {
 			cell = row.AddCell()
 			cell.Value = doc.Docs[index][HeaderDoc[j]]
+			cell.SetStyle(dataStyle)
+
+			if utf8.RuneCountInString(cell.Value) > withHeader[HeaderDoc[j]] {
+				withHeader[HeaderDoc[j]] = utf8.RuneCountInString(cell.Value)
+				//fmt.Println(cell.Value)
+			}
 		}
+	}
+	//Устанавливаем ширину колонок
+	//fmt.Println(withHeader)
+	for i, col := range sheet.Cols {
+		col.Width = float64(withHeader[HeaderDoc[i]])
+		//fmt.Println(i, HeaderDoc[i], col.Width)
 	}
 
 	err = file.Save(fileName)
@@ -103,4 +132,25 @@ func (doc *File1C) ToExcel(fileName string) error {
 		return err
 	}
 	return nil
+}
+
+//SaveInFile Сохраняем результат в файл
+func SaveInFile(doc *File1C, newFileName string, format string) {
+
+	var err error
+
+	switch format {
+	case "json":
+		err = doc.ToJSON(newFileName)
+	case "xlsx":
+		err = doc.ToExcel(newFileName)
+	case "csv":
+		err = doc.ToCsv(newFileName)
+	default:
+		fmt.Printf("Формат вывода <%s> не определён в программе", format)
+	}
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("результат: %s\n", newFileName)
 }
