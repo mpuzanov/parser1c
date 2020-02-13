@@ -5,8 +5,9 @@
 
 ## Примеры вызова  
 
-    ./parser1c.exe -format=json files/kl_to_1c.txt      
-
-сайт для тестирования шаблонов регулярных выражений:  
-
-    https://regex101.com/
+    ./parser1c -format=json example/kl_to_1c.txt
+    результат: example/kl_to_1c.json
+    ./parser1c -format=csv example/kl_to_1c.txt   
+    результат: example/kl_to_1c.csv
+    ./parser1c -format=xlsx example/kl_to_1c.txt
+    результат: example/kl_to_1c.xlsx
