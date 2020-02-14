@@ -44,14 +44,20 @@ func main() {
 	if rawBytes, err = ioutil.ReadAll(readerDecoder); err != nil {
 		log.Fatal(err)
 	}
-	//fmt.Println(string(rawBytes))
+	//log.Println(string(rawBytes))
 
 	doc, err := parser1c.ImportData(string(rawBytes))
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	if doc.CountDoc() == 0 {
+		//log.Println(doc)
+		log.Printf("Кол-во документов в реестре %d. Выходной файл не создан!", doc.CountDoc())
+		return
+	}
 	// формируем имя файла - меняем расширение
 	newFileName := strings.TrimSuffix(file, path.Ext(file)) + formats[*format]
-
 	models.SaveInFile(doc, newFileName, *format)
+
 }

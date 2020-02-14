@@ -7,7 +7,26 @@ import (
 var testData1, testData2 string
 
 func init() {
-	testData1 = `
+	testData1 =
+		`1CClientBankExchange
+	ВерсияФормата=1.02
+	Кодировка=Windows
+	Отправитель=
+	Получатель=
+	ДатаСоздания=12.07.2019
+	ВремяСоздания=11:43:24
+	ДатаНачала=04.07.2019
+	ДатаКонца=12.07.2019
+	РасчСчет=12345678901234567890
+	СекцияРасчСчет
+	ДатаНачала=04.07.2019
+	ДатаКонца=12.07.2019
+	НачальныйОстаток=7133.27
+	РасчСчет=12345678901234567890
+	ВсегоСписано=150840
+	ВсегоПоступило=170529.31
+	КонечныйОстаток=26822.58
+	КонецРасчСчет	
 	СекцияДокумент=Платежное поручение
 	Номер=162
 	Дата=10.07.2019
@@ -69,6 +88,18 @@ func init() {
 	НазначениеПлатежа=Оплата за июнь 2019 НДС не облагается.
 	`
 
+}
+
+func TestImportData(t *testing.T) {
+	want := 2
+	got, err := ImportData(testData1)
+	if err != nil {
+		t.Errorf("got=%v, expected=%v, error: %v", got, want, err)
+	} else {
+		if len(got.Docs) != want {
+			t.Errorf("got=%v, expected=%v", got, want)
+		}
+	}
 }
 
 func TestGetStringDoc(t *testing.T) {

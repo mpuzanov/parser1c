@@ -32,6 +32,11 @@ var HeaderDoc = []string{"Номер", "Дата", "Сумма", "Платель
 //withHeader ширина колонок
 var withHeader = make(map[string]int)
 
+//CountDoc возвращает кол-во документов(платежей) в реестре
+func (doc *File1C) CountDoc() int {
+	return len(doc.Docs)
+}
+
 //ToCsv Сохранение в csv-формат
 func (doc *File1C) ToCsv(toFileName string) error {
 	s := ""

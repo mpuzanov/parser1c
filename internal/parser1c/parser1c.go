@@ -19,7 +19,6 @@ func ImportData(data string) (doc *models.File1C, err error) {
 	if strings.TrimSpace(lines[0]) != "1CClientBankExchange" {
 		return nil, fmt.Errorf("File not 1CClientBankExchange")
 	}
-	//log.Println(data)
 
 	for _, val := range models.HeaderFile {
 		doc.Header[val] = getValueName(val, data)

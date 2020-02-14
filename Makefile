@@ -20,6 +20,7 @@ test:
 
 run:
 	go run ${SOURCE} -format xlsx ./example/kl_to.txt
+	go run ${SOURCE} -format json ./example/kl_to_1c.txt
 
 lint :
 	@goimports -w ${GO_SRC_DIRS}
