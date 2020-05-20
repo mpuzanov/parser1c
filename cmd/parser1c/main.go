@@ -11,8 +11,8 @@ import (
 
 	"golang.org/x/text/encoding/charmap"
 
-	"parser1c/internal/models"
 	"parser1c/internal/parser1c"
+	"parser1c/internal/storage"
 )
 
 func main() {
@@ -58,6 +58,6 @@ func main() {
 	}
 	// формируем имя файла - меняем расширение
 	newFileName := strings.TrimSuffix(file, path.Ext(file)) + formats[*format]
-	models.SaveInFile(doc, newFileName, *format)
+	storage.SaveInFile(doc, newFileName, *format)
 
 }

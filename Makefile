@@ -24,6 +24,8 @@ run:
 
 lint :
 	@goimports -w ${GO_SRC_DIRS}
-	golangci-lint run
+	@gofmt -s -w ${GO_SRC_DIRS}
+	@golint ${GO_SRC_DIRS}	
+	#golangci-lint run
 	
 .PHONY: build test run lint

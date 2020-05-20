@@ -4,28 +4,28 @@ import (
 	"fmt"
 	"regexp"
 
-	"parser1c/internal/models"
+	"parser1c/internal/storage"
 	"strings"
 )
 
 var pattern string
 
 //ImportData Преобразуем текст файла с реестром в нашу структуру документа
-func ImportData(data string) (doc *models.File1C, err error) {
+func ImportData(data string) (doc *storage.File1C, err error) {
 
-	doc = models.NewFile1C()
+	doc = storage.NewFile1C()
 
 	lines := strings.SplitN(data, "\n", 2)
 	if strings.TrimSpace(lines[0]) != "1CClientBankExchange" {
 		return nil, fmt.Errorf("File not 1CClientBankExchange")
 	}
 
-	for _, val := range models.HeaderFile {
+	for _, val := range storage.HeaderFile {
 		doc.Header[val] = getValueName(val, data)
 	}
 	for _, docStr := range getStringDoc(data) {
 		doc1 := make(map[string]string)
-		for _, val := range models.HeaderDoc {
+		for _, val := range storage.HeaderDoc {
 			doc1[val] = getValueName(val, docStr)
 		}
 		doc.Docs = append(doc.Docs, doc1)

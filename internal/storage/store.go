@@ -1,27 +1,17 @@
-package models
+package storage
 
 import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"parser1c/internal/domain/model"
 	"unicode/utf8"
 
 	"github.com/tealeg/xlsx"
 )
 
-// File1C файл выгрузки платежей из 1С
-type File1C struct {
-	Header map[string]string
-	Docs   []map[string]string
-}
-
-// NewFile1C Создание реестра
-func NewFile1C() *File1C {
-	d := &File1C{}
-	d.Header = make(map[string]string)
-	d.Docs = make([]map[string]string, 0)
-	return d
-}
+// File1C структура с платежами из выписки 1С
+type File1C model.File1C
 
 //HeaderFile параметры файла
 var HeaderFile = []string{"ВерсияФормата", "Кодировка", "ДатаСоздания"}
@@ -31,6 +21,14 @@ var HeaderDoc = []string{"Номер", "Дата", "Сумма", "Платель
 
 //withHeader ширина колонок
 var withHeader = make(map[string]int)
+
+// NewFile1C Создание реестра
+func NewFile1C() *File1C {
+	d := &File1C{}
+	d.Header = make(map[string]string)
+	d.Docs = make([]map[string]string, 0)
+	return d
+}
 
 //CountDoc возвращает кол-во документов(платежей) в реестре
 func (doc *File1C) CountDoc() int {
